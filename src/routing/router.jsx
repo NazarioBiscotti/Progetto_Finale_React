@@ -2,7 +2,7 @@
 import routes from "./routes";
 import Layout from "../components/Layouts/Layout";
 import Homepage from "../views/Homepage";
-import About from "../views/About";
+
 import Detail from "../views/Detail";
 import Login from "../views/Login";
 import Register from "../views/Register";
