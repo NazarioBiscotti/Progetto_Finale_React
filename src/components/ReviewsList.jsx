@@ -12,13 +12,15 @@ export default function ReviewsList({game}) {
             .select("*")
             .eq("game_id", game.id);
         setGameReviews(reviews)
-        console.log(reviews);
+        
 
        
     };
 
     useEffect(() => {
         getReviews()
+       
+        
 
     }, [])
 
@@ -29,7 +31,7 @@ export default function ReviewsList({game}) {
         
             <div className="  md:w-1/3 w-full  m-auto flex flex-wrap md:flex-row flex-col justify-center grid-cols-3 p-3 gap-5" >
 
-            {gameReview.length > 0 ? (gameReview.map((el)=> 
+            {gameReview ? (gameReview.map((el)=> 
             
             <div className="md:w-1/4 bg-gray-400 rounded-2xl w-full text-center border-2 border-gray-500 min-h-28 flex items-center p-5 justify-center "  key={el.id}>
                

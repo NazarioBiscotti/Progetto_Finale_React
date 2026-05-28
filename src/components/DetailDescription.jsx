@@ -2,12 +2,14 @@ import { useState, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../context/UserContext";
 import { supabase } from "../database/supabase";
+import { useNavigate } from "react-router";
 
 export default function BodyDetail({game}){
 
     const [isFavourite, setIsFavourite] = useState(false);
    
     const { profile } = useContext(UserContext);
+    const navigate = useNavigate()
 
     const { register, handleSubmit, watch, reset, formState: { errors }, } = useForm();
 
@@ -17,11 +19,12 @@ export default function BodyDetail({game}){
                 const {data, error}= await supabase
                 .from("Reviews")
                 .insert([
-                    {profile_id: profile.id, game_id: game.id, game_name: game.name, description: review.description}
+                    {profile_id: profile?.id, game_id: game?.id, game_name: game.name, description: review.description}
                 ])
                 .eq("game_id", game.id);
        
-                    
+                    console.log(data);
+                    navigate(0)
         reset();
     };
 
@@ -30,8 +33,8 @@ export default function BodyDetail({game}){
         const { data, error } = await supabase
             .from("favourite table")
             .select()
-            .eq("profile_id", profile.id)
-            .eq("game_id", game.id);
+            .eq("profile_id", profile?.id)
+            .eq("game_id", game?.id);
 
         if (error) {
             console.log(error);
@@ -41,10 +44,11 @@ export default function BodyDetail({game}){
         setIsFavourite(data.length > 0);
     };
 
-    useEffect(() => {
+useEffect(() => {
+    if (profile?.id && game?.id) {
         getFavourite();
-        
-    }, []);
+    }
+}, [profile, game]);
 
     const addFavourite = async () => {
         await supabase

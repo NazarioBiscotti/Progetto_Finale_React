@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react"
 import { Link } from "react-router"
 import { GamesContext } from "../../context/GamesContext"
+import { UserContext } from "../../context/UserContext"
 import Card from "../Card"
 import Filterbar from "./Filterbar"
 import Search from "../filters/Search"
@@ -10,9 +11,9 @@ import Categories from "../filters/Categories"
 
 
 export default function CardWrapper() {
-    
-    const { games, category, input, setCategory, setInput } = useContext(GamesContext)
 
+    const { games, category, input, setCategory, setInput } = useContext(GamesContext)
+    const { user } = useContext(UserContext)
 
 
 
@@ -20,11 +21,13 @@ export default function CardWrapper() {
     function renderGames() {
         let filteredGames = games || []
 
+        
         if (category !== "All") {
 
             filteredGames = filteredGames.filter((el) =>
                 el.genres?.some((genre) => genre.name === category)
             )
+
 
         }
 
@@ -32,11 +35,15 @@ export default function CardWrapper() {
             filteredGames = filteredGames.filter((el) => el.name?.toLowerCase().includes(input.toLowerCase()))
         }
 
-        return filteredGames.map((el) => (
-            <Link key={el.id} to={`/detail/${el.id}`}>
-            <Card  game={el} />
-            </Link>
-        ))
+        return filteredGames.map((el) =>
+            user ? (
+                <Link key={el.id} to={`/detail/${el.id}`}>
+                    <Card game={el} />
+                </Link>
+            ) : (
+                <Card key={el.id} game={el} />
+            )
+        )
 
 
     }
@@ -44,11 +51,11 @@ export default function CardWrapper() {
     return (<>
         <div className="flex flex-col w-full m-auto" >
 
-        
-                 <Filterbar>
-                                <Categories setCategory={setCategory} />
-                                <Search setInput={setInput} />
-                            </Filterbar>
+
+            <Filterbar>
+                <Categories setCategory={setCategory} />
+                <Search setInput={setInput} />
+            </Filterbar>
             <div className="m-auto gap-10  grid md:grid-cols-3 grid-col-1">
 
                 {renderGames()}
